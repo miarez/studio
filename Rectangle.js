@@ -27,9 +27,17 @@ class Rectangle extends Draggable {
       return this.rollover = transformedMouseX > this.x && transformedMouseX < this.x + this.w && transformedMouseY > this.y && transformedMouseY < this.y + this.h;
     }
 
+
+
+    outline(){
+      stroke(0, 0, 255);
+      strokeWeight(2);
+      rect(this.x - 3, this.y - 3, this.w + 6, this.h + 6);
+      noFill();
+    }
+
+
     show() {
-
-
 
       strokeWeight(this.strokeWeight);
       stroke(this.stroke.r, this.stroke.g, this.stroke.b);
@@ -37,14 +45,15 @@ class Rectangle extends Draggable {
       if (this.dragging) fill(50);
       else if (this.rollover) fill(100);
       else fill(this.fill.r, this.fill.g, this.fill.b);
-      rect(this.x, this.y, this.w, this.h);
-
-      rotate(0);
+      rect(this.x, this.y, this.w, this.h);      
     }
 
 
     // shit show....
     show_rotated(){
+
+      this.rotationAngle = 45
+
       // Translate to the center of the rectangle
       translate(this.x + this.w / 2, this.y + this.h / 2);
       

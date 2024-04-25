@@ -35,6 +35,15 @@
           <span class="tooltiptext">Select</span>
       </button>
 
+      <button class="tool tooltip" onclick="app.load()"><i class="fas fa-folder-open"></i>
+        <span class="tooltiptext">Open</span>
+      </button>
+
+      <button class="tool tooltip" onclick="app.save()"><i class="fas fa-save"></i>
+        <span class="tooltiptext">Save</span>
+      </button>
+
+
         <button class="tool tooltip" onclick="app.controls.reset()"><i class="fas fa-sync-alt"></i>
           <span class="tooltiptext">Reset View</span>
         </button>
@@ -133,9 +142,7 @@
 
                 document.querySelector(".main").style.cursor='auto'
 
-
             }
-
         }
 
         // Initialize the button setup

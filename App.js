@@ -95,6 +95,59 @@ class App {
       this.shapeManager.handleUpdate();
       this.shapeManager.handleShow();
     }
+
+
+
+    
+    
+    // load(){
+    //   let name = prompt("Shape Name")
+    //   let response = localStorage.getItem(name)
+    //   this.shapeManager.shapes = response
+    //   cs(response)
+    //   cs('heereeeeee')
+    // }
+
+    // save(){
+
+    //   cs(this.shapeManager.shapes)
+
+    //   localStorage.setItem(name, this.shapeManager.shapes)
+
+    // }
+   save() {
+      let name = prompt("Shape Name") 
+      const serializedData = JSON.stringify(this.shapeManager.shapes, (key, value) => {
+          if (key === "") return value; // Return the entire object if the key is empty (initial call).
+          if (typeof value === "object" && value !== null) {
+              return { ...value, _classType: value.constructor.name };
+          }
+          return value;
+      });
+      localStorage.setItem(name, serializedData);
+   }
+   
+   load() {
+
+    const data = localStorage.getItem(prompt("Shape Name"));
+    if (!data) return null;
+
+    this.shapeManager.shapes = JSON.parse(data, (key, value) => {
+        if (value && typeof value === "object" && "_classType" in value) {
+            switch (value._classType) {
+                case "Rectangle":
+                    return Object.assign(new Rectangle(), value);
+                case "Circle":
+                    return Object.assign(new Circle(), value);
+                default:
+                    return value;
+            }
+        }
+        return value;
+    });
+}
+
+  
   
   }
   

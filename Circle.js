@@ -24,7 +24,7 @@ class Circle extends Draggable {
 
       let d = dist(transformedMouseX, transformedMouseY, this.x, this.y);
       return this.rollover = d < this.r;
-  }
+   }
 
     show() {
       strokeWeight(this.strokeWeight);
@@ -35,4 +35,12 @@ class Circle extends Draggable {
       else fill(this.fill.r, this.fill.g, this.fill.b);
       ellipse(this.x, this.y, this.r * 2);
     }
+
+    outline(){
+      stroke(0, 0, 255);
+      strokeWeight(2);
+      ellipse(this.x, this.y, this.r * 2 + 6);
+      noFill();
+    }
+
 }

@@ -35,15 +35,28 @@ class Polygon extends Draggable {
         return this.rollover = inside;
   }
 
-    show() {
-      strokeWeight(this.strokeWeight);
-      stroke(this.stroke.r, this.stroke.g, this.stroke.b);
+  
 
-      if (this.dragging) fill(50);
-      else if (this.rollover) fill(100);
-      else fill(this.fill.r, this.fill.g, this.fill.b);
-      beginShape();
-      this.points.forEach(p => vertex(p.x + this.x, p.y + this.y));
-      endShape(CLOSE);
-    }
+  show() {
+    strokeWeight(this.strokeWeight);
+    stroke(this.stroke.r, this.stroke.g, this.stroke.b);
+
+    if (this.dragging) fill(50);
+    else if (this.rollover) fill(100);
+    else fill(this.fill.r, this.fill.g, this.fill.b);
+    beginShape();
+    this.points.forEach(p => vertex(p.x + this.x, p.y + this.y));
+    endShape(CLOSE);
+  }
+
+  outline(){
+    stroke(0, 0, 255);
+    strokeWeight(2);
+    beginShape();
+    this.points.forEach(p => vertex(p.x + this.x, p.y + this.y));
+    endShape(CLOSE);
+    noFill();
+  }
+
+
 }

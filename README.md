@@ -19,8 +19,8 @@ Random todo:
 
 
 - [ ] delete shapes
-- [ ] persist shapes to disk
-- [ ] load from disk
+- [x] persist shapes to disk
+- [x] load from disk
 
 
 - [ ] nested layers shape-manager/layer-manager & ui
@@ -36,3 +36,16 @@ Random todo:
     - [ ] center/edges of shape on hover
     - [ ] center/edges of other shapes near by
     - [ ] snap to near-by shapes
+
+
+- [ ] draw custom shapes/polygons 
+- [ ] custom shapes w/ bezier curves 
+
+
+- [ ] select multiple elements
+    - [ ] drag selection
+    - [ ] ctrl / shift to add to selected items
+
+
+- [ ] duplicate shape 
+- [ ] reflect
