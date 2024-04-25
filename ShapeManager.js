@@ -7,6 +7,7 @@ class ShapeManager {
     }
 
     addShape(shape) {
+        shape.name = 'shape-' + this.shapes.length
         this.shapes.push(shape); // Add a new shape to the list
     }
 
@@ -25,11 +26,11 @@ class ShapeManager {
             if (this.activeShape === shape) {
                 stroke(0, 0, 255);
                 strokeWeight(2);
-                if (shape instanceof DraggableRectangle) {
+                if (shape instanceof Rectangle) {
                     rect(shape.x - 3, shape.y - 3, shape.w + 6, shape.h + 6);
-                } else if (shape instanceof DraggableCircle) {
+                } else if (shape instanceof Circle) {
                     ellipse(shape.x, shape.y, shape.r * 2 + 6);
-                } else if (shape instanceof DraggableCustomShape) {
+                } else if (shape instanceof Polygon) {
                     beginShape();
                     shape.points.forEach(p => vertex(p.x + shape.x, p.y + shape.y));
                     endShape(CLOSE);

@@ -15,61 +15,62 @@ class App {
   
       this.mainElement = document.querySelector(".main");
   
-      this.listeners()
+
   
     }
   
-    listeners(){
-      
-      window.mousePressed = function(e) {
+    listeners() {
+      // Get the actual canvas DOM element
+      const canvasElement = this.canvas.elt;
+
+      canvasElement.addEventListener('mousedown', (e) => {
+          if (this.currentMode === "hand") {
+              this.controls.mousePressed(e);
+          } else if (this.currentMode === "selection") {
+              this.shapeManager.handlePressed();
+              this.ui.updateShapeDetails();  // Update the shape details display
+          }
+          e.stopPropagation();  // Prevent event from propagating to other elements
+      });
+
+      canvasElement.addEventListener('mousemove', (e) => {
+          if (this.currentMode === "hand") {
+              this.controls.mouseDragged(e);
+          }
+      });
+
+      canvasElement.addEventListener('mouseup', (e) => {
+          if (this.currentMode === "hand") {
+              this.controls.mouseReleased(e);
+          } else if (this.currentMode === "selection") {
+              this.shapeManager.handleReleased();
+          }
+      });
+
+      canvasElement.addEventListener('wheel', (e) => {
+          this.controls.zoom(e);
+          e.preventDefault();  // Prevent scrolling the page when zooming on the canvas
+      });
+  }
   
-        if (app.currentMode === "hand") {
-          app.controls.mousePressed(e);
-        } else if (app.currentMode === "selection") {
-          app.shapeManager.handlePressed();
-          app.ui.updateShapeDetails();  // Update the shape details display
-        }
-      };
-  
-      window.mouseDragged = function(e) {
-        if (app.currentMode === "hand") {
-          app.controls.mouseDragged(e);
-        }
-      };
-  
-      window.mouseReleased = function(e) {
-        if (app.currentMode === "hand") {
-          app.controls.mouseReleased(e);
-        } else if (app.currentMode === "selection") {
-          app.shapeManager.handleReleased();
-        }
-      };
-  
-      window.mouseWheel = function(e) {
-        // if (currentMode === "hand") {
-          app.controls.zoom(e)
-        // }
-      };
-  
-    }
-  
-    setup(){
-      
-      // this.shapeManager = new ShapeManager();
+    setup(){    
       this.canvas = window.createCanvas(this.mainElement.offsetWidth, this.mainElement.offsetHeight).parent("canvas");
       this.artboard = {x: window.width / 8, y: window.height / 8, w: window.width / 1.5, h: window.height / 1.5};  
       this.ui.updateShapeList();
+      this.listeners()
     }
   
     
     add_rectangle(){
-      this.shapeManager.addShape(new DraggableRectangle(width/2, height/2, 100, 50, this.controls));
+      this.shapeManager.addShape(new Rectangle(width/2, height/2, 100, 50, this.controls));
+      this.ui.updateShapeList()
     }
     add_circle(){
-      this.shapeManager.addShape(new DraggableCircle(width/2, height/2, 30, this.controls));
+      this.shapeManager.addShape(new Circle(width/2, height/2, 30, this.controls));
+      this.ui.updateShapeList()      
     }
     add_polygon(){
-      this.shapeManager.addShape(new DraggableCustomShape(width/2, height/2, [
+      this.shapeManager.addShape(new Polygon(width/2, height/2, [
         new p5.Vector(50, 0),
         new p5.Vector(25, 43.3),
         new p5.Vector(-25, 43.3),
@@ -77,6 +78,7 @@ class App {
         new p5.Vector(-25, -43.3),
         new p5.Vector(25, -43.3)
       ], this.controls));
+      this.ui.updateShapeList()      
     }
   
     draw(){
