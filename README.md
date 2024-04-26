@@ -49,3 +49,6 @@ Random todo:
 
 - [ ] duplicate shape 
 - [ ] reflect
+
+
+- [ ] BUG: drag only the shape on top when two shapes overlap 
