@@ -22,9 +22,9 @@ class ShapeManager {
     handleShow() {
         this.shapes.forEach(shape => {
             shape.show();
-            if (this.activeShape === shape) {
-                shape.outline()
-            }
+            // if (this.activeShape === shape) {
+            //     shape.outline()
+            // }
         });
     }
 
@@ -33,8 +33,11 @@ class ShapeManager {
         let shapePressed = false;
         this.shapes.forEach(shape => {
             if (shape.over()) {
+                shape.active = true
                 this.activeShape = shape; // Set the active shape
                 shapePressed = true;
+            } else {
+                shape.active = false
             }
             shape.pressed();
         });

@@ -17,6 +17,9 @@ class Rectangle extends Draggable {
         g : 200,
         b : 200
       }
+      this.active = false
+      this.resizeHandleSize = 15;
+
     }
 
     over() {
@@ -36,16 +39,68 @@ class Rectangle extends Draggable {
       noFill();
     }
 
+    outline_over(){
+      stroke(0, 255, 0);
+      strokeWeight(2);
+      rect(this.x - 3, this.y - 3, this.w + 6, this.h + 6);
+      noFill();
+    }
 
     show() {
 
       strokeWeight(this.strokeWeight);
       stroke(this.stroke.r, this.stroke.g, this.stroke.b);
-      
-      if (this.dragging) fill(50);
-      else if (this.rollover) fill(100);
-      else fill(this.fill.r, this.fill.g, this.fill.b);
-      rect(this.x, this.y, this.w, this.h);      
+     
+
+      if(this.active){
+        this.outline()
+        this.render_resize_handle()
+      }
+      else if (this.rollover) {
+        this.outline_over()
+        this.render_resize_handle()
+      }
+      else {
+        fill(this.fill.r, this.fill.g, this.fill.b);
+        rect(this.x, this.y, this.w, this.h);        
+      }
+
+
+    }
+
+    mouseIsOverResizeBox() {
+      let transformedMouseX = (mouseX - this.controls.view.x) / this.controls.view.zoom;
+      let transformedMouseY = (mouseY - this.controls.view.y) / this.controls.view.zoom;
+
+      return (
+        transformedMouseX > this.x+this.w-this.resizeHandleSize 
+          && 
+        transformedMouseY >this.y+this.h-this.resizeHandleSize 
+          && 
+        transformedMouseX < this.x+this.w 
+          && 
+        transformedMouseY < this.y + this.h
+      );
+    }
+
+
+
+    render_resize_handle(){
+      var handleX1 = this.x+this.w-this.resizeHandleSize;
+      var handleY1 = this.y+this.h-this.resizeHandleSize;
+      var handleX2 = this.x + this.w;
+      var handleY2 = this.y + this.h;
+      noStroke();
+      fill('grey');
+      beginShape();
+      vertex(handleX1, handleY1 + this.resizeHandleSize);
+      vertex(handleX2, handleY1);
+      vertex(handleX2, handleY2);
+      endShape(CLOSE);
+      stroke('black');
+      line(handleX1, handleY1 + this.resizeHandleSize, handleX2, handleY1);
+      line(handleX1+5, handleY1 + this.resizeHandleSize, handleX2, handleY1+5);
+      line(handleX1+10, handleY1 + this.resizeHandleSize, handleX2, handleY1+10);
     }
 
 

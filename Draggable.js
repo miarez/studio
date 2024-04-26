@@ -6,6 +6,10 @@ class Draggable {
       this.y = y;
       this.offsetX = 0;
       this.offsetY = 0;
+
+      this.isBeingResized = false
+      this.minimumWidth   = 5
+      this.minimumHeight  = 5
     }
 
     // Method to detect if the mouse is over the shape
@@ -18,6 +22,9 @@ class Draggable {
       if (this.dragging) {
         this.x = mouseX + this.offsetX;
         this.y = mouseY + this.offsetY;
+      } else if(this.isBeingResized){
+        this.w = Math.max(this.minimumWidth, mouseX + this.offsetX);
+        this.h = Math.max(this.minimumHeight, mouseY + this.offsetY);
       }
     }
 
@@ -29,7 +36,12 @@ class Draggable {
     // Mouse pressed on the shape
     pressed() {
       if (this.over()) {
-        this.dragging = true;
+
+        if(this.mouseIsOverResizeBox()){
+          this.isBeingResized = true
+        } else {
+          this.dragging = true;          
+        }
         this.offsetX = this.x - mouseX;
         this.offsetY = this.y - mouseY;
       }
@@ -38,5 +50,6 @@ class Draggable {
     // Mouse released
     released() {
       this.dragging = false;
+      this.isBeingResized = false
     }
 }
