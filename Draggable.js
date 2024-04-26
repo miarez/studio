@@ -1,16 +1,21 @@
 class Draggable {
-    constructor(x, y) {
-      this.dragging = false; // Is the object being dragged?
-      this.rollover = false; // Is the mouse over the object?
-      this.x = x;
-      this.y = y;
-      this.offsetX = 0;
-      this.offsetY = 0;
+  constructor(x, y) {
+    this.dragging = false;
+    this.rollover = false;
+    this.x = x;
+    this.y = y;
+    this.w = 50; // initial width
+    this.h = 50; // initial height
+    this.offsetX = 0;
+    this.offsetY = 0;
 
-      this.isBeingResized = false
-      this.minimumWidth   = 5
-      this.minimumHeight  = 5
-    }
+    this.isBeingResized = false;
+    this.initialWidth = 0;
+    this.initialHeight = 0;
+    this.minimumWidth = 5;
+    this.minimumHeight = 5;
+}
+
 
     // Method to detect if the mouse is over the shape
     over() {
@@ -20,32 +25,37 @@ class Draggable {
     // Update the position if being dragged
     update() {
       if (this.dragging) {
-        this.x = mouseX + this.offsetX;
-        this.y = mouseY + this.offsetY;
-      } else if(this.isBeingResized){
-        this.w = Math.max(this.minimumWidth, mouseX + this.offsetX);
-        this.h = Math.max(this.minimumHeight, mouseY + this.offsetY);
+          this.x = mouseX + this.offsetX;
+          this.y = mouseY + this.offsetY;
+      } else if (this.isBeingResized) {
+        let transformedMouseX = (mouseX - this.controls.view.x) / this.controls.view.zoom;
+        let transformedMouseY = (mouseY - this.controls.view.y) / this.controls.view.zoom;
+  
+          // Calculate new dimensions based on initial dimensions and mouse movement
+          this.w = Math.max(this.initialWidth + (transformedMouseX - (this.x + this.initialWidth)), this.minimumWidth);
+          this.h = Math.max(this.initialHeight + (transformedMouseY - (this.y + this.initialHeight)), this.minimumHeight);
       }
-    }
+  }
 
     // Show the shape (needs to be implemented in derived classes)
     show() {
       throw new Error('Method "show()" must be implemented');
     }
 
-    // Mouse pressed on the shape
     pressed() {
       if (this.over()) {
-
-        if(this.mouseIsOverResizeBox()){
-          this.isBeingResized = true
-        } else {
-          this.dragging = true;          
-        }
-        this.offsetX = this.x - mouseX;
-        this.offsetY = this.y - mouseY;
+          if (this.mouseIsOverResizeBox()) {
+              this.isBeingResized = true;
+              // Record initial dimensions when resize starts
+              this.initialWidth = this.w;
+              this.initialHeight = this.h;
+          } else {
+              this.dragging = true;
+          }
+          this.offsetX = this.x - mouseX;
+          this.offsetY = this.y - mouseY;
       }
-    }
+  }
 
     // Mouse released
     released() {
