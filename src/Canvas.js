@@ -1,11 +1,11 @@
 class Canvas {
-    constructor(id, w, h, fill) {
+    constructor(id, w, h) {
         this.element;
         this.shapes     = [];
         this.id         = id;
         this.w          = w;
         this.h          = h;
-        this.fill       = fill;
+        this.fill       = 100;
 
         this.sketch = new p5((s) => {
             s.setup = () => {

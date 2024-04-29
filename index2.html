@@ -21,6 +21,30 @@
       
       <style>
 
+        .main-window {
+            width:100%; 
+            height:100%; 
+            background-color: white; 
+            display:none;
+        }
+
+        .tabs {
+            display: inline-block;
+        }
+
+        .tab {
+            height: 100%;
+            width: 100px;
+            color: white;
+            display: inline-block;
+            text-align: center;
+            border: 1px solid white;
+        }
+
+        .tab.active {
+            border: 1px solid red;
+        }
+
 
       </style>
   </head>
@@ -31,9 +55,8 @@
 
       <div class="item header">Studio</div>
       <div class="item tools">
-
         
-      <button class="tool tooltip" onclick="app.load()"><i class="fas fa-file"></i>
+      <button class="tool tooltip" onclick="ui.show_new_panel_window()"><i class="fas fa-file"></i>
         <span class="tooltiptext">New</span>
       </button>
 
@@ -45,8 +68,6 @@
       <button class="tool tooltip" onclick="app.save()"><i class="fas fa-save"></i>
         <span class="tooltiptext">Save</span>
       </button>
-
-
 
       <button class="tool tooltip mode-toggle">
           <i class="fas fa-arrow-right"></i>
@@ -77,8 +98,17 @@
   
 
       </div>
-      <div class="item main" id="canvas" style="box-sizing: border-box !important;">
-        <div style="width:100%; height:100%; background-color: white;"></div>
+
+      <div class="item tabs">
+        <div class="tab active">Home</div>
+      </div>
+      <div class="item main" style="box-sizing: border-box !important;">
+        <div class='main-window' id='home'>
+            Name:<input type="text" id="new-file-name" placeholder="untitled-0">
+            Width:<input type="number" id="new-file-width" placeholder="400">px
+            Height:<input type="number" id="new-file-width" placeholder="400">px
+            <button onclick="create_new_canvas()">Create</button>
+        </div>
       </div>
       <div class="item layers">
         <ul id="shapeList"></ul>
@@ -101,13 +131,72 @@
     <script>
 
         const cs = console.log
+        const app = new App();
+
+        class UI {
+
+            constructor(){
+                this.main           = document.querySelector(".main")
+                this.tabs_element   = document.querySelector(".tabs")
+                this.home_panel  = document.querySelector("#home")
+            }
+
+            hide_panels(){
+
+                for (var i = 0; i < this.tabs_element.children.length; i++) {
+                    this.tabs_element.children[i].classList.remove('active');
+                }
+                for (var i = 0; i < this.main.children.length; i++) {
+                    this.main.children[i].style.display = 'none';
+                }
+            }
+
+            show_new_panel_window(){
+                this.hide_panels()
+                this.home_panel.style.display = 'block'
+            }
+
+
+
+            create_new_canvas_element(){
+                this.hide_panels()
+
+                
+                let tab = document.createElement('div')
+                tab.innerHTML = 'untitled-0'
+                tab.classList.add('tab')
+                tab.classList.add('active')                
+                this.tabs_element.appendChild(tab)
+
+
+                let canvas = document.createElement('div')
+                canvas.id = 'untitled-0'
+                canvas.classList.add('main-window')
+                canvas.style.display = 'block'
+                this.main.appendChild(canvas)
+            }
+        }
+
+        let ui = new UI()
+
+
+
+
+        function create_new_canvas(){
+            ui.create_new_canvas_element()
+            let main               = document.querySelector(".main")
+
+
+            app.addCanvas(new Canvas('untitled-0', main.offsetWidth, main.offsetHeight)
+                .add_shape(new Rectangle(10, 10, 20, 20))
+            );
+        }
+
 
         // // Set up the app
-        // const app = new App();
 
-        // app.addCanvas(new Canvas('canvas1', 100, 100, 100)
-        //     .add_shape(new Rectangle(10, 10, 20, 20))
-        // );
+
+
         // app.addCanvas(new Canvas('canvas2', 100, 100, 100)
         //     .add_shape(new Circle(20, 20, 30))
         // );

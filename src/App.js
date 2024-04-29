@@ -6,6 +6,7 @@ class App {
     
     addCanvas(canvas) {
         this.canvases.push(canvas);
+        this.showCanvas(0)
     }
 
 
