@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+
+
+
+
+  </head>
+  <body>
+    <script >
+        const cs = console.log
+
+
+        var test_box;
+
+        function setup() {
+            //new box(xpos, ypos, width, height, minimumWidth, minimumHeight, maintainAspectRatio = false) 
+            // test_box = new Box(100, 100, 80, 40, 40, 30, true);
+            test_box = new Box(50, 50, 40, 80, 40, 80, false);
+            createCanvas(800, 800);
+            }
+
+            function draw() {
+            background('grey');
+            test_box.update();
+            }
+
+            function mousePressed() {
+            test_box.clicked();
+            }
+
+            function mouseReleased() {
+            test_box.released();
+            }
+
+            class Box {
+            constructor(x, y, width, height, minimumWidth, minimumHeight, maintainAspectRatio){
+                this.width = width;
+                this.height = height;
+                this.x = x;
+                this.y = y;
+                
+                //the size of the resize box in the lower lefthand corner of the box
+                this.resizeSize = 15;
+                
+                // an aspect ratio is the ratio of width to height
+                this.aspectRatio = this.width/this.height;
+                this.maintainAspectRatio = maintainAspectRatio;
+                
+                this.minimumWidth = minimumWidth;
+                this.minimumHeight = minimumHeight;
+                
+                //if the initial width less than the minimum width, set the width to the minimum width.
+                if(minimumWidth > width) {
+                this.width = this.minimumWidth;
+                }
+                
+                //if the initial height is less than the minimum height, set the height to the minimum width.
+                if(minimumHeight > height) {
+                this.height = this.minimumHeight
+                }
+
+                if (this.maintainAspectRatio) {
+                //if the aspect ratio is maintained, either the minimum height or minimum width won't match the aspect ratio. But only one will ever really be reached.
+                //so we can set the limiter that won't be reached based on the aspect ratio.
+                
+                //if the height when width is at the minimum is less than the minimum height, set the minimum height based on the aspect ratio.
+                if (this.minimumWidth / this.aspectRatio > this.minimumHeight) {
+                    //console.log("The requested minimum height of " + String(this.minimumHeight) + " cannot be reached. Setting the minimum height based on the aspect ratio to " + String(this.minimumWidth / this.aspectRatio) + ".");
+                    this.minimumHeight = this.minimumWidth / this.aspectRatio;
+                }
+                
+                //if the width when the height is at the minimum is less than the minimum width
+                if (this.minimumHeight * this.aspectRatio > this.minimumWidth) {
+                    //console.log("The requested minimum width of " + String(this.minimumWidth) + " cannot be reached. Setting the minimum width based on the aspect ratio to " + String(this.minimumHeight * this.aspectRatio) + ".");
+                    this.minimumWidth = this.minimumHeight * this.aspectRatio;
+                }
+                }
+                
+                this.isBeingResized = false;
+                this.isBeingDragged = false;
+                
+                //These store the offset for moving and resizing the image
+                this.offsetX;
+                this.offsetY;
+            }
+            
+            clicked(){
+                if (this.mouseIsOverResizeBox()) {
+                this.isBeingResized= true;
+                //the distances from position of the mouse inside the box to the bottom right corner
+                this.offsetX = (this.x + this.width) - mouseX;
+                this.offsetY = (this.y + this.height) - mouseY
+                } else if (this.mouseIsOver()) {
+                this.isBeingDragged = true;
+                this.offsetX = this.x - mouseX;
+                this.offsetY = this.y - mouseY;
+                }
+            }
+            
+            released() {
+                this.isBeingResized = false;
+                this.isBeingDragged = false;
+            }
+            
+            update() {
+                stroke('black');
+                fill('green');
+                rect(this.x, this.y, this.width, this.height);
+                
+                if (this.mouseIsOver() || this.isBeingResized) {
+                    var handleX1 = this.x+this.width-this.resizeSize;
+                    var handleY1 = this.y+this.height-this.resizeSize;
+                    var handleX2 = this.x + this.width;
+                    var handleY2 = this.y + this.height;
+                    noStroke();
+                    fill('grey');
+                    beginShape();
+                    vertex(handleX1, handleY1 + this.resizeSize);
+                    vertex(handleX2, handleY1);
+                    vertex(handleX2, handleY2);
+                    endShape(CLOSE);
+                    stroke('black');
+                    line(handleX1, handleY1 + this.resizeSize, handleX2, handleY1);
+                    line(handleX1+5, handleY1 + this.resizeSize, handleX2, handleY1+5);
+                    line(handleX1+10, handleY1 + this.resizeSize, handleX2, handleY1+10);
+                }
+
+                if (this.isBeingResized) {
+                if (this.maintainAspectRatio) {
+                    if (mouseX - this.x + this.offsetX > this.minimumWidth) {
+                    this.width = mouseX - this.x + this.offsetX;
+                    this.height = this.width / this.aspectRatio;
+                    
+                    } else {
+                    this.width = this.minimumWidth;
+                    this.height = this.minimumHeight;
+                    }
+
+                    //console.log("new width is greater than minimum width: " + String(mouseX - this.x + this.offsetX > this.minimumWidth));
+                    //console.log("new height is greater than minimum height: " + String(this.width / this.aspectRatio > this.minimumHeight));
+                } else {
+                    if (mouseX - this.x + this.offsetX > this.minimumWidth) {
+                    this.width = mouseX - this.x + this.offsetX;
+                    } else {
+                    this.width = this.minimumWidth;
+                    }
+                    if (mouseY - this.y + this.offsetY > this.minimumHeight) {
+                    this.height = mouseY - this.y + this.offsetY;
+                    } else {
+                    this.height = this.minimumHeight;
+                    }
+                }
+                }
+                
+                if(this.isBeingDragged) {
+                this.x = mouseX+this.offsetX;
+                this.y = mouseY+this.offsetY;
+                }
+                
+            }
+            mouseIsOver(){
+                return (mouseX > this.x && mouseY > this.y && mouseX < this.x + this.width && mouseY < this.y + this.height);
+            }
+            mouseIsOverResizeBox() {
+                return (mouseX > this.x+this.width-this.resizeSize && mouseY >this.y+this.height-this.resizeSize && mouseX < this.x+this.width && mouseY < this.y + this.height);
+            }
+            }
+
+
+
+    </script>
+  </body>
+</html>
